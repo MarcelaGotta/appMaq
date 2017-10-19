@@ -1,0 +1,16 @@
+var CNT = {
+  name: '<%= nombreCNT %>',
+  ngModule: {},
+  init: function () {
+    angular.bootstrap(document, [CNT.name])
+  }
+}
+
+CNT.ngModule = angular.module(CNT.name, [
+  'ui.router',
+  'oc.lazyLoad',
+  T3_COMUN_APP.NAME,
+  'ui.bootstrap',
+  'ngResource',
+  'gettext'
+])

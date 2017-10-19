@@ -1,0 +1,65 @@
+'use strict';
+CNT.ngModule.factory('<%= nombreCGT %>Service', ['$q', '<%= nombreCGT %>Model',
+    function( $q ,<%= nombreCGT %>Model){
+
+        var <%= nombreCGT %>Service = {};
+
+        <%= nombreCGT %>Service.initialData = null;
+
+        var previousData = {
+            "view":{},
+            "functionality":{},
+            "data":{}
+        };
+
+        <%= nombreCGT %>Service.getPreviousView = function(){
+            return previousData.view;
+        };
+
+        <%= nombreCGT %>Service.getPreviousFunctionality = function(){
+            return previousData.functionality;
+        };
+
+        <%= nombreCGT %>Service.getPreviousData = function(){
+            return previousData.data;
+        };
+
+        <%= nombreCGT %>Service.setPreviousData = function(view, functionality,data){
+            previousData = {
+                "view": view,
+                "functionality":functionality,
+                "data":data
+            };
+        };
+
+        <% if(services.length > 0) {
+            for(var service of services) { %>
+        /*<Nota sobre la función>*/
+        <%= nombreCGT %>Service.<%= service %> = function(<%= service %>_IN) {
+            var deferred = $q.defer();
+            <%= nombreCGT %>Model.<%= service %>(<%= service %>_IN).success(function(data) {
+                deferred.resolve(data);
+            }).error(function(data, status) {
+                deferred.reject(crearObjetoError(data, status));
+            });
+            return deferred.promise;
+        };
+        <% }} %>
+        /*Insertar las funciones que recuperan los datos con t3ServiceFuncion*/
+
+        function crearObjetoError(data, status){
+          var errorObj;
+          if(status === 500){
+            if((data.errorDescription !== undefined) && (data.errorDescription !== null)){
+              errorObj = {code:500, mensaje1:data.errorDescription, mensaje2:data.errorId, mensaje3:data.context};
+            }else{
+              errorObj = {code:status};
+            }
+          }else{
+            errorObj = {code:status};
+          }
+          return errorObj;
+        };
+
+        return <%= nombreCGT %>Service;
+    }]);

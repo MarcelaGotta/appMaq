@@ -1,0 +1,48 @@
+'use strict';
+
+CNT.ngModule.controller('<%= nombreCGT %>Controller', ['$scope', '$log', 'PopupService', 'gettextCatalog', '<%= nombreCGT %>Service', 'T3_CommunicationService', 'T3_CabeceraPresentacionService', '$state', 'T3_TrazaService', '$stateParams', 'T3_StateService',
+function($scope, $log, PopupService, gettextCatalog, <%= nombreCGT %>Service, T3_CommunicationService, T3_CabeceraPresentacionService, $state, T3_TrazaService, $stateParams, T3_StateService){
+
+        $scope.init = function(){
+            /*Objeto que guarda los datos utilizados por el usuario*/
+            $scope.<%= nombreCGT %>View = <%= nombreCGT %>Service.getPreviousView() ;
+            /*objeto que contiene los datos necesarios para el correcto funcionalmiento del cgt*/
+            $scope.<%= nombreCGT %>Functionality = <%= nombreCGT %>Service.getPreviousFunctionality();
+            /*objeto en el que guardamos los datos traidos del back*/
+            $scope.<%= nombreCGT %>Data =<%= nombreCGT %>Service.getPreviousData();
+
+
+             $scope.loadMultilanguage();
+            /* Subscribe a la función de Multiidioma*/
+            T3_CommunicationService.subscribe($scope, "AlertLanguageChanged", $scope.loadMultilanguage);
+
+
+            T3_StateService.init($scope, <%= nombreCGT %>Service, {
+                CGT_<%= nombreCGT %>_IN : $scope.cgt<%= nombreCGT.charAt(0).toUpperCase() + nombreCGT.slice(1) %>In || $stateParams.cgt<%= nombreCGT.charAt(0).toUpperCase() + nombreCGT.slice(1) %>In
+            });
+
+            $scope.<%= nombreCGT %>Functionality.datosPrevios = <%= nombreCGT %>Service.initialData.CGT_<%= nombreCGT %>_IN;
+
+        };
+        /*función que carga el multidioma*/
+        $scope.loadMultilanguage = function(){
+            T3_CabeceraPresentacionService.resolveTranslationsCG('<%= nombreCGT %>',gettextCatalog.currentLanguage);
+        };
+
+        <% if(services.length > 0) {
+            for(var service of services) { %>
+        $scope.<%= service %> = function() {
+            var <%= service %>_IN  = {};
+            <%= nombreCGT %>Service.<%= service %>(<%= service %>_IN ).then(function(data) {
+                $scope.<%= nombreCGT %>Data.<%= service %> = data;
+            }, function(error) {
+                $log.debug('Failed: ' + error.code);
+                /* Si necesitas mostrar error de carga descomenta la llamada a la función y carga la función con t3ErrorGetterController*/
+                /* $scope.mostrarErrorGetter(error); */
+            });
+        };
+        <% }
+        } %>
+        /* Insertar, si es preciso, la función o funciones que obtienen los datos desde el service con t3ControllerGetter*/
+
+}]);

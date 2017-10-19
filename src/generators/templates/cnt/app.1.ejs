@@ -1,0 +1,112 @@
+
+// Fichero de configuración require de la pagina CNT1/index.html
+
+// Objeto de configuración general del modulo todos los servicios directivas y controler extienden de este modulo. salvo los servicios comunes que extienden del definido en common.
+
+// Creamos modulo del CNT, inyectando los modulos necesarios, se establecen los NOMBRES(etes dato es muy importante) los mismo que tienen
+//los MODULOS instanciados.
+
+CNT.ngModule.run([ '$rootScope', '$state', '$stateParams', 'gettextCatalog', 'T3_CabeceraPresentacionService',
+        function($rootScope, $state, $stateParams, gettextCatalog, T3_CabeceraPresentacionService) {
+            T3_CabeceraPresentacionService.initializeHead(CNT.name);
+            var actualLocalLanguageStorage = T3_CabeceraPresentacionService.getLanguage();
+            gettextCatalog.currentLanguage = actualLocalLanguageStorage;
+        } ]);
+
+// configuramos el modulo con el route.
+CNT.ngModule.config(['$stateProvider', '$urlRouterProvider', '$ocLazyLoadProvider', 'T3_UrlServiceProvider',
+  function($stateProvider, $urlRouterProvider, $ocLazyLoadProvider,T3_UrlServiceProvider) {
+
+            $ocLazyLoadProvider.config({
+                loadedModules : [ 'ui.bootstrap',T3_COMUN_APP.NAME]
+            });
+            $urlRouterProvider.otherwise('/');
+            <%  for(let x in cgts){
+                if(mainState === cgts[x].nombreCGT) {%>
+                    $stateProvider
+                    .state('<%= cgts[x].nombreCGT %>', {
+                        url: '/',
+                        templateUrl: T3_UrlServiceProvider.loadUrlTemplate('<%= cgts[x].nombreCGT %>'),
+                        resolve: {
+                        loadMyCtrl: ['$ocLazyLoad','T3_UrlService', function($ocLazyLoad,T3_UrlService) {
+                            return $ocLazyLoad.load(
+                                //ficheros que necesitamos del CGT
+                            [
+                                        /** Inserta módulos
+                                        * ngMessages    para las dobles validaciones
+                                        * uiDate       fechas
+                                        *...                        */
+                            <% for(let y in cgts[x].modules){ -%>
+                                T3_UrlService.loadModule("<%= cgts[x].modules[y] %>"),
+                            <% } -%>
+                                        /** Inserta componentes del CGT
+                                         * c   controller
+                                        * s   service
+                                        * m   model
+                                        * d   directive                      */
+                                T3_UrlService.loadCG([
+                                    {name:"<%= cgts[x].nombreCGT %>",tipos:"<%- cgts[x].mvcdMap %>"}
+                                    /* Puedes añadir otros cgts que utilizarás en este estado aquí */ 
+                                ]),
+                                        /** Inserta las directivas comunes necesarias para la carga de componentes comunes
+                                        * T3_CCP_UI_Grid.tablas                 Tablas
+                                        * T3_CCP_UI_Modales                     Popup
+        
+                                        * T3_CCP_UI_CKEditor                      Editor
+                                        * T3_CCP_UI_datePicker.inputDate         Fechas
+                                        *...                        */
+                                T3_UrlService.loadCommonComponent(<%- JSON.stringify(cgts[x].components) %>,null)
+                            ]);
+                        }]
+        
+                        }
+                    })
+                <% }
+            } 
+              for(let x in cgts){
+                 if(cgts[x].isState && mainState !== cgts[x].nombreCGT) {%>
+                    .state('<%= cgts[x].nombreCGT %>', {
+                        url: '/<%= cgts[x].nombreCGT %>',
+                        templateUrl: T3_UrlServiceProvider.loadUrlTemplate('<%= cgts[x].nombreCGT %>'),
+                        resolve: {
+                        loadMyCtrl: ['$ocLazyLoad','T3_UrlService', function($ocLazyLoad,T3_UrlService) {
+                            return $ocLazyLoad.load(
+                                //ficheros que necesitamos del CGT
+                            [
+                                        /** Inserta módulos
+                                        * ngMessages    para las dobles validaciones
+                                        * uiDate       fechas
+                                        *...                        */
+                            <% for(let y in cgts[x].modules){ -%>
+                                T3_UrlService.loadModule("<%= cgts[x].modules[y] %>"),
+                            <% } -%>
+                                        /** Inserta componentes del CGT
+                                         * c   controller
+                                        * s   service
+                                        * m   model
+                                        * d   directive                      */
+                                T3_UrlService.loadCG([
+                                    {name:"<%= cgts[x].nombreCGT %>",tipos:"<%- cgts[x].mvcdMap %>"}
+                                    /* Puedes añadir otros cgts que utilizarás en este estado aquí */ 
+                                ]),
+                                        /** Inserta las directivas comunes necesarias para la carga de componentes comunes
+                                        * T3_CCP_UI_Grid.tablas                 Tablas
+                                        * T3_CCP_UI_Modales                     Popup
+
+                                        * T3_CCP_UI_CKEditor                      Editor
+                                        * T3_CCP_UI_datePicker.inputDate         Fechas
+                                        *...                        */
+                                T3_UrlService.loadCommonComponent(<%- JSON.stringify(cgts[x].components) %>,null)
+                            ]);
+                        }]
+
+                        }
+                    })
+                //inserta los estados con el snippet t3AppEstado
+                <% }
+            } %>
+
+        ;}
+
+]);
+    

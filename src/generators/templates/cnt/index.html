@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org"<% if(responsive) { %> data-on-size-changed <% } %>>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Telco 3.0</title>
+    <link rel="stylesheet" href="../static-aei/css/base2-1.css" />
+    <link rel="stylesheet" href="../static-aei/css/comunes2-1.css" />
+    <% if(responsive) { %><link rel="stylesheet" href="../static-aei/css/resp2-1.css" /><% } %>
+    <% if(cntdir.indexOf('css') !== -1) { %><link rel="stylesheet" href="css/<%= nombreCNT %>.css" /><% } %>
+    <link rel="shortcut icon" href="../static-aei/images/icons/favicon.ico">
+    <link rel="apple-touch-icon" href="../static-aei/images/icons/fapple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../static-aei/images/icons/fapple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../static-aei/images/icons/fapple-touch-icon-114x114.png">
+   <link rel="apple-touch-icon" sizes="144x144" href="../static-aei/images/icons/fapple-touch-icon-144x144.png">
+  </head>
+  <body>
+
+    <div id="page">
+    	<!-- Header -->
+    	<header data-te-header></header>
+    	<!-- // Header -->
+  		<div id="content_page">
+      		<div ui-view></div>
+    	</div>
+    </div>
+
+    <!-- Footer -->
+    <footer data-te-footer></footer>
+
+
+    <!-- librerias se cargan con requireJS -->
+    <script type="text/javascript" src="../static-thirdparty/webjars/requirejs/2.1.14-3/require.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>

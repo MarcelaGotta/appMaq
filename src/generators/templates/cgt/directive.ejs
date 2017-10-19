@@ -1,0 +1,10 @@
+
+CNT.ngModule.directive('<%= nombreCGT %>', function(){
+  return {
+    restrict: 'A',
+    templateUrl: 'cgt/<%= nombreCGT %>/<%= nombreCGT %>_view.html',
+    scope:{
+        cgt<%= nombreCGT %>In : '='
+    }
+  };
+});

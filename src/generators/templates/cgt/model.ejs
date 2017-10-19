@@ -1,0 +1,19 @@
+'use strict';
+CNT.ngModule.factory('<%= nombreCGT %>Model', ['T3_HTTPService',
+    function(T3_HTTPService){
+         /*URL para maqueta*/
+        var URL_RELATIVE = '../data/<%= nombreMod %>/<%= nombreCGT %>/';
+        var <%= nombreCGT %>Model = {};
+
+        <% if(services.length > 0) {
+            for(var service of services) { %>
+        /** <Explicación sobre el comportamiento de la función> */
+        <%= nombreCGT %>Model.<%= service %> = function(<%= service %>_IN){
+            return T3_HTTPService.get(URL_RELATIVE + '<%= service %>.json');
+        };
+        <% }
+        } %>
+        /*<Insertar las funciones que recuperan los datos con t3ModelFunciones>*/
+
+        return <%= nombreCGT %>Model;
+    }]);
